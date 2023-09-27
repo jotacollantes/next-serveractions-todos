@@ -20,8 +20,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <main className='container mx-auto py-4'>
         <Toaster
-            position="top-left"
+            //position="top-left"
+            position="bottom-center"
             reverseOrder={false}
+            toastOptions={{className:"w-full"}}  
           />{children}
         </main>
         
