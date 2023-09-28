@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "../../../../libs/prismadb";
 import { TodoZodSchema } from "../schema";
 import { ZodError } from "zod";
-
+import { auth } from "@clerk/nextjs";
 interface ResponseCreateTodo{
   success: boolean;
   message: string;
@@ -15,11 +15,20 @@ export const createTodo = async (title: string):Promise<ResponseCreateTodo> => {
   //     error: "Ingrese title (backend)",
   //   };
   // }
+  const { userId } = auth();
+  if(!userId){
+    return {
+      success:false,
+    message: "usuario no existe (backend)"
+    }
+    
+  }
   try {
     TodoZodSchema.parse({title})
     await prisma.todo.create({
       data: {
         title,
+        userId:userId!
       },
     });
     //revalidatePath trata a la variable todos como un state y compara el valor de todos que esta en cache del servidor de next con el nuevo valor y pinta el dato actualizado
